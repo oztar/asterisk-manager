@@ -1,0 +1,36 @@
+{
+   "name": "asterisk-manager",
+   "version": "0.1.0",
+   "description": "Node.js Asterisk Manager conection IO  socket OR TLS socket",
+   "main": "manager.js",
+   "directories": {
+      "ssl": "ssl"
+   },
+   "dependencies": {},
+   "devDependencies": {},
+   "scripts": {
+      "test": "mocha test",
+      "start": "node manager.js"
+   },
+   "repository": {
+      "type": "git",
+      "url": "git://github.com/oztar/asterisk-manager.git"
+   },
+   "bugs": {
+      "url": "https://github.com/oztar/asterisk-manager/issues"
+   },
+   "bundleDependencies": false,
+   "author": "Alfredo Roman",
+   "deprecated": false,
+   "keywords": [
+      "asterisk",
+      "pbx",
+      "utilities",
+      "events",
+      "ami",
+      "asterisk.io",
+      "manager"
+   ],
+   "license": "ISC",
+   "homepage": "https://github.com/oztar/asterisk-manager#readme"
+}
