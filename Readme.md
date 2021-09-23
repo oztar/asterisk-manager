@@ -78,17 +78,25 @@ ami.on('EventOriginateResponse', function(data){
 
 //sokect control error 
 ami.on('error', function(err){
+
       ...     
+      
       //your code here
+      
       ...
 });
 
 
 //Manager Create Action to send Asterisk
+
 //see documentation AMI actions 
+
 //https://wiki.asterisk.org/wiki/display/AST/Asterisk+18+AMI+Actions
+
 //https://wiki.asterisk.org/wiki/display/AST/Asterisk+16+AMI+Actions
+
 //https://wiki.asterisk.org/wiki/display/AST/Asterisk+13+AMI+Actions
+
 let form = {
     Action : 'Originate',
     Channel: 'sip/67890',
