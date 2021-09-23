@@ -1,4 +1,4 @@
-## Asterisk Manager
+## Asterisk Manager TLS
 
 This is a library for conection socket to Asterisk Manager with TCP or with TLS
 
@@ -10,7 +10,7 @@ You need access Asterisk Manager in configuration manager.conf
 
 ...
 
-npm install asterisk-manager
+npm install asterisk-manager-tls
 
 ...
 
@@ -19,7 +19,7 @@ npm install asterisk-manager
 
 ## Usage example with TLS
 
-const astersik_Manager = require('asterisk-manager');
+const astersik_Manager = require('asterisk-manager-tls');
 
 
 //instance

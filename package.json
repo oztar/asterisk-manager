@@ -1,7 +1,7 @@
 {
-   "name": "asterisk-manager",
+   "name": "asterisk-manager-tls",
    "version": "0.1.0",
-   "description": "Node.js Asterisk Manager conection IO  socket OR TLS socket",
+   "description": "Node.js Asterisk Manager conection IO  socket TCP OR TLS socket",
    "main": "manager.js",
    "directories": {
       "ssl": "ssl"
@@ -14,10 +14,10 @@
    },
    "repository": {
       "type": "git",
-      "url": "git://github.com/oztar/asterisk-manager.git"
+      "url": "git://github.com/oztar/asterisk-manager-tls.git"
    },
    "bugs": {
-      "url": "https://github.com/oztar/asterisk-manager/issues"
+      "url": "https://github.com/oztar/asterisk-manager-tls/issues"
    },
    "bundleDependencies": false,
    "author": "Alfredo Roman",
