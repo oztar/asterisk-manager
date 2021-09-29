@@ -1,6 +1,7 @@
 /**
  * @file Acterisk-Manager
  * @author Alfredo Roman <alfredoromandominguez@gmail.com>
+ * @version 0.1.1
  * @example 1  conection text
  *  //call library
  *  const libAMI = require('Asterisk-manager');
@@ -299,7 +300,9 @@ class manager extends EventEmitter{
 
     /* method control errors */
     error(){
-	this.emit('error', format.apply(format,arguments));
+	try{
+	    this.emit('error', format.apply(format,arguments));
+	}catch(e){}
     }
     
 
