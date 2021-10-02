@@ -116,11 +116,11 @@ ami.on('EventAny', function(dataJson){
 
 // *
 
-// Event<asterisk's event name>
+// <asterisk's event name>
 
 // *
 
-ami.on('EventOriginateResponse', function(data){
+ami.on('OriginateResponse', function(data){
 
       ...     
       

@@ -244,8 +244,8 @@ function _send(_this,data){
 	
 	/* Event response */
     }else if(data['Event'] !== undefined){  
-        _this.emit('EventAny', data);
-        _this.emit('Event'+data['Event'], data);
+        _this.emit('EventAny'   , data);
+        _this.emit(data['Event'], data);
     }
 }
 
