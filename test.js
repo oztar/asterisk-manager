@@ -1,7 +1,7 @@
 'user strict'
 const path         = __dirname;
 const exp          = require('chai').expect;
-const lib          = require(path+ '/prueba.js');
+const lib          = require(path+ '/manager.js');
 const net          = require('net');
 const tls          = require('tls');
 const fs           = require('fs');
@@ -87,14 +87,14 @@ describe('Asterisk Manager', function(){
 	ami.on('EventAny',event );	
     });  
 
-    it('Asterisk Manager EventOriginate', function(done){
+    it('Asterisk Manager Originate', function(done){
 	let ActionID = ami.action(Originate6789);
 	function eventO(data){
 	    exp(data.Event).to.equal('OriginateResponse');
-	    ami.off('EventOriginateResponse',eventO);
+	    ami.off('OriginateResponse',eventO);
 	    done();
 	}	
-	ami.on('EventOriginateResponse',eventO);
+	ami.on('OriginateResponse',eventO);
     });
 });
 describe('Close tcp server', function() {
@@ -176,15 +176,15 @@ describe('Asterisk Manager TLS', function(){
 	ami.on('EventAny',event );	
     });  
 
-    it('Asterisk Manager EventOriginate', function(done){
+    it('Asterisk Manager Originate', function(done){
 	let ActionID = ami.action(Originate6789);
 
 	function eventO(data){
 	    exp(data.Event).to.equal('OriginateResponse');
-	    ami.off('EventOriginateResponse',eventO);
+	    ami.off('OriginateResponse',eventO);
 	    done();
 	}
-	ami.on('EventOriginateResponse',eventO);
+	ami.on('OriginateResponse',eventO);
     });
 });
 
@@ -197,9 +197,7 @@ describe('Close tls server', function() {
      }
      ami.on('error',fclose);
  });
-    after(function () {
-	process.exit(1);
-    });
+
 });
 
 

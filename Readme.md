@@ -58,12 +58,6 @@ const options = {
       
 
 
-//create connection
-
-ami.login(options)
-
-
-
 
 ## Usage example with out TLS
 
@@ -92,12 +86,86 @@ const options = {
       
       };
 
+
+
+
+## connection TLS and whithout TLS
+
+//library connect socket 
+
+//and with socket connected send Login
+
+
 //create connection
 
 ami.login(options)
 
 
+//in case de error of socket connection, library emit event error
+
+ami.on('error', function(data){
+
+		/*
+
+		Lost connection to server.
+
+		*/
+
+});
+
+
+//when in case authentication fail,  library emit event error 
+
+ami.on('error', function(data){
+
+		/* 
+
+		{
+
+		  Response: 'Error',
+
+		  ActionID: '991',
+
+		  Message: 'Authentication failed',
+
+		  '': undefined
+
+		}		  
+
+		*/ 
+
+});
+
+
+//when library connect success socket in manager asterisk, library emit event connected, its only information.
+
+ami.on('connect', function(){
+
+  //where login Asterisk is success, libary emit event information 'Ready'
+
+  ami.on('Ready', function(){
+
+      ...      
+
+      //your code here
+      
+      ...
+  });
+
+});
+
+
+
+##Events library emit. 
+
+//instance
+
+let ami = astersik_Manager();
+
+
 //create all events of asterisk
+
+//not need into event Ready
 
 ami.on('EventAny', function(dataJson){
 
@@ -179,6 +247,30 @@ let form = {
     
 let ActionID = ami.action(form);
 
+
+##Manager restart ami 
+
+//logoff asterisk manager
+
+ami.logoff();
+
+//renew login
+
+ami.login(options)
+
+
+##Manager hard-restart ami
+
+// close sokect tcp 
+
+//the function include emit logoff 
+
+ami.disconnect();
+
+
+//renew socket and login
+
+ami.login(options);
 
 
 

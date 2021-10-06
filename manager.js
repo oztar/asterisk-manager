@@ -1,7 +1,7 @@
 /**
  * @file Acterisk-Manager
  * @author Alfredo Roman <alfredoromandominguez@gmail.com>
- * @version 0.1.1
+ * @version 0.1.3
  * @example 1  conection text
  *  //call library
  *  const libAMI = require('Asterisk-manager');
@@ -15,9 +15,15 @@
  *              'ssl'      : 'disable'
  *           }); 
  * 
+ *  //event ready socket connection asterisk node
+ *  //its only information 
+ *  ami.on('connected', function(){
+ *     console.log('Asterisk conected');
+ *  });
+ * 
  *  //event emitted any events of asterisk manager
- *  ami.on('EventAny', function(a){
- *      console.log('Event:',a);
+ *  ami.on('EventAny', function(data){
+ *      console.log('Event:',data);
  *  });
  *
  *  //event emitted Event+<name event> of asterisk manager
@@ -74,6 +80,7 @@ const tls          = require('tls');
 
 let socket,user,pass;
 let actionID = 0;
+let actionLog= -1;
 
 
 /**
@@ -83,11 +90,12 @@ const txtError = {
     UNDEFINED     : 'Undefined error.',
     EMPTY_ARGUMENT: 'Argument "%s" missing in function call.',
     CONNECT_ERROR : 'Could not connect to server. Code: %s.',
-    SOCKED_ERROR  : 'Error in server. Code: %s.',
-    SOCKED_CLOSE  : 'Lost connection to server.',
+    SOCKET_ERROR  : 'Error in server. Code: %s.',
+    SOCKET_CLOSE  : 'Lost connection to server.',
     AUTH_FAILED   : 'Authentication failed.',
     ACTION_ERROR  : 'Action manager failed: %s.'
 };
+const AuthenticationSuccess = 'Authentication accepted';
 
 /**
  * conection login
@@ -113,8 +121,19 @@ function _login(_this,settings){
     settings.secure = settings.secure || null;
     settings.CA = settings.CA || null;
 
-    let arguments_not_empty = ['hostname','port','username','password','ssl'];
-    let arguments_ssl_empty = ['cert','key'];
+    const arguments_not_empty = ['hostname','port','username','password','ssl'];
+    const arguments_ssl_empty = ['cert','key'];
+
+    const onConnect = ()=>{
+	_this.on('Success',_this._authentication);
+	actionLog = _action(_this,{
+	    Action   : 'Login',
+	    Username : user,
+	    Secret   : pass
+	});
+	
+	_this.off('connect',onConnect);
+    } 
 
     for( let name of arguments_not_empty){
 	if(settings[name] === undefined){
@@ -161,12 +180,19 @@ function _login(_this,settings){
 	}
     }
     
+    
+    _this.on('connect',onConnect);
+
+
     process.nextTick(function(){
 	if( settings.ssl == 'on' || settings.ssl == 'enable' ){
             _connect_ssl(_this);
 	}else{
 	    _connect(_this);
 	}
+
+
+
     });
 }    
 
@@ -190,12 +216,8 @@ function _connect(_this){
 
 function _listentings(_this){
     socket.setEncoding('utf8');    
-    socket.on('connect', function(){	
-	_action(_this,{
-	    Action   : 'Login',
-	    Username : user,
-	    Secret   : pass
-	});
+    socket.on('connect', function(){
+	_this.emit('connect');
     });
 
     socket.on('data', function(data){	
@@ -213,18 +235,21 @@ function _listentings(_this){
 	}
     });
 
+    socket.on('disconnect', function() {
+	_this.emit('close',txtError('SOCKET_CLOSE'));
+    });
 
     socket.on('connecterror', function(err){
 	_this.error(txtError['CONNECT_ERROR'],err);
     });
     
     socket.on('error', function(err){
-        _this.error(txtError['SOCKED_ERROR'], err.code);
+        _this.error(txtError['SOCKET_ERROR'], err.code);
     });
 
 
     socket.on('close', function(){
-	_this.error(txtError['SOCKED_CLOSE']);
+	_this.error(txtError['SOCKET_CLOSE']);
 	_this.emit('close',1);
     });
 }
@@ -235,7 +260,7 @@ function _listentings(_this){
 function _send(_this,data){
     /* error response */
     if( data['Response'] == 'Error'){
-	_this.error(txtError['SOCKED_ERROR'],data);
+	_this.error(txtError['SOCKET_ERROR'],data);
 	
 	/* data Response success */
     }else if(data['Response'] == 'Success'){
@@ -249,16 +274,23 @@ function _send(_this,data){
     }
 }
 
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 function _action(_this,form){
+    if( form.action !== undefined){ 
+	form.Action = form.action;
+	delete form.action;
+    }
     if( form.Action === undefined){ 
-	_this.error(txtError['ACTION_ERROR'],'parameter action, not empty');
+	_this.error(txtError['ACTION_ERROR'],'parameter "Action", not empty');
 	return;
     }
     
     let action = '';
     for( let id in form){
-	action += id+': '+form[id]+"\r\n";
+	action += capitalizeFirstLetter(id)+': '+form[id]+"\r\n";
     }
 
     //anadimos el action id
@@ -305,11 +337,31 @@ class manager extends EventEmitter{
 	}catch(e){}
     }
     
+    /* disconect asterisk session */
+    logoff(){
+	_action(this,{Action:'logoff'});
+    }
+    
+    /* disconect all, session and socket */
+    disconnect(){
+	_action(this,{Action:'logoff'});    
+	socket.destroy()
+	this.emit('close', 'Close sokect');
+	
+    }
 
     /* method for emit socket to manager */
     action(form){
 	return _action(this,form);
     }
+
+    _authentication = (data)=>{
+	if( data.ActionID == actionLog && data.Message == AuthenticationSuccess){
+	    this.emit('Ready');
+	    this.off('Success',this._authentication);
+	}
+    }
+
 
 }
 

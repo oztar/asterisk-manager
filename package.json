@@ -1,6 +1,6 @@
 {
    "name": "asterisk-manager-tls",
-   "version": "0.1.2",
+   "version": "0.1.3",
    "description": "Node.js Asterisk Manager conection IO  socket TCP OR TLS socket",
    "main": "manager.js",
    "directories": {
