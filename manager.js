@@ -238,8 +238,11 @@ function _listentings(_this){
 	chunk +=data.toString(); //add txt in totalvar
 	limiter = chunk.indexOf(delimiter);
 	if( limiter > -1){
-	    txttosend(_this,chunk.substring(0,limiter));//only txt to send eventEmitter
-	    chunk = chunk.substring(limiter+limiter_len);// delete txt. 
+	    while( limiter > -1){
+		txttosend(_this,chunk.substring(0,limiter));//only txt to send eventEmitter
+		chunk = chunk.substring(limiter+limiter_len);// delete txt. 
+		limiter = chunk.indexOf(delimiter);
+	    }
 	}
     });
 
