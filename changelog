@@ -1,3 +1,4 @@
+version 0.2.4 - fixed function
 version 0.2.3 - socket data
 	recolector stream to string data,
 	select only txt for send event|response... to emit

@@ -221,11 +221,9 @@ function txttosend(_this,txt){
     for(let i in msg){
 	let x = msg[i].split(': ');
 	ndata[x[0]] = x[1];
-	if(x[1] === undefined){
-	    _this.send(ndata);
-	    ndata={};
-	}
     }
+    _this.send(ndata);
+    ndata={};
 }
 function _listentings(_this){
     socket.setEncoding('utf8');    
@@ -240,7 +238,7 @@ function _listentings(_this){
 	chunk +=data.toString(); //add txt in totalvar
 	limiter = chunk.indexOf(delimiter);
 	if( limiter > -1){
-	    txttosend(chunk.substring(0,limiter));//only txt to send eventEmitter
+	    txttosend(_this,chunk.substring(0,limiter));//only txt to send eventEmitter
 	    chunk = chunk.substring(limiter+limiter_len);// delete txt. 
 	}
     });
