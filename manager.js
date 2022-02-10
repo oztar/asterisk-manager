@@ -1,7 +1,7 @@
 /**
  * @file Acterisk-Manager
  * @author Alfredo Roman <alfredoromandominguez@gmail.com>
- * @version 0.1.3
+ * @version 0.2.3
  * @example 1  conection text
  *  //call library
  *  const libAMI = require('Asterisk-manager');
@@ -213,25 +213,35 @@ function _connect(_this){
 
 
 
-
+function txttosend(_this,txt){
+    let ndata = {};
+    
+    //console.log('data',data.toString());
+    let msg = data.split("\r\n");
+    for(let i in msg){
+	let x = msg[i].split(': ');
+	ndata[x[0]] = x[1];
+	if(x[1] === undefined){
+	    _this.send(ndata);
+	    ndata={};
+	}
+    }
+}
 function _listentings(_this){
     socket.setEncoding('utf8');    
     socket.on('connect', function(){
 	_this.emit('connect');
     });
 
+    let chunk='',limiter=0;
+    const delimiter = ('\r\n\r\n');
+    const limiter_len = delimiter.length;
     socket.on('data', function(data){	
-	let ndata = {};
-
-	//console.log('data',data.toString());
-	let msg = data.split("\r\n");
-	for(let i in msg){
-	    let x = msg[i].split(': ');
-	    ndata[x[0]] = x[1];
-	    if(x[1] === undefined){
-		_this.send(ndata);
-		ndata={};
-	    }
+	chunk +=data.toString(); //add txt in totalvar
+	limiter = chunk.indexOf(delimiter);
+	if( limiter > -1){
+	    txttosend(chunk.substring(0,limiter));//only txt to send eventEmitter
+	    chunk = chunk.substring(limiter+limiter_len);// delete txt. 
 	}
     });
 
